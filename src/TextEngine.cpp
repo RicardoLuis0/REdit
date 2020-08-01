@@ -31,15 +31,15 @@ namespace TextEngine {
         IO::moveCursor(x,y);
     }
     
-    static void x_minus(bool wrap=false){
+    static void x_minus(bool wrap=false,bool use_xmin=true){
         if(x==x_min){
             if(y==y_min){
                 if(wrap){
-                    x=x_max;
+                    x=use_xmin?x_min:x_max;
                     y=y_max;
                 }
             }else{
-                x=x_max;
+                x=use_xmin?x_min:x_max;
                 y--;
             }
         }else{
@@ -122,6 +122,11 @@ namespace TextEngine {
                     case '\r':
                         y_plus();
                         break;
+                    case '\t':
+                        do{
+                            IO::writeChar(' ');
+                            x_plus();
+                        }while(x%4);
                     default:
                         if(isgraph(key.key)){
                             IO::writeChar(key.key);
