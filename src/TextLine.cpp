@@ -59,7 +59,7 @@ TextLine * TextLine::split(size_t at){
 
 void TextLine::append(const TextLine &other){
     if(other._len!=0){
-        resize(_len+other._len,false);
+        grow(_len+other._len);
         memcpy(buf+_len,other.buf,other._len);
         _len+=other._len;
     }
