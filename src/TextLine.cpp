@@ -57,6 +57,13 @@ TextLine * TextLine::split(size_t at){
     return new TextLine(nbuf,sz,sz+1);
 }
 
+void TextLine::append(const TextLine &other){
+    if(other._len!=0){
+        resize(_len+other._len,false);
+        memcpy(buf+_len,other.buf,other._len);
+    }
+}
+
 void TextLine::insert(char c,size_t at){
     if(at>_len){
         resize(at+1,true);
@@ -74,7 +81,7 @@ void TextLine::insert(char c,size_t at){
 
 void TextLine::erase(size_t at){
     if(at>=_len) return;
-    memmove(buf+at,buf+at-1,(_len-at)+1);
+    memmove(buf+at+1,buf+at,_len-at);
     resize(_len-1,false);
 }
 
@@ -95,7 +102,7 @@ void TextLine::resize(size_t new_size,bool move_terminator){
 void TextLine::grow(size_t to){
     if(to<=_alloc)return;//only allow growth
     size_t ns=max(_alloc*2,to);//double or grow to necessary, whichever is largest
-    buf=(char*)realloc(buf,ns);
+    buf=(char*)realloc(buf,sizeof(char)*ns);
     _alloc=ns;
 }
 
