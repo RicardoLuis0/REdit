@@ -47,6 +47,7 @@
 		<Unit filename="src/MenuEngine.cpp" />
 		<Unit filename="src/TextEngine.cpp" />
 		<Unit filename="src/TextLine.cpp" />
+		<Unit filename="src/Util.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
