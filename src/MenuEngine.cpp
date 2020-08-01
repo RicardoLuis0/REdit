@@ -1,4 +1,5 @@
 #include "MenuEngine.h"
+#include "TextEngine.h"
 #include "IOLayer.h"
 
 namespace MenuEngine {
@@ -22,6 +23,7 @@ namespace MenuEngine {
     }
     
     void handle_input(IO::keypress key){
+        if(key.key=='s')TextEngine::save("test.txt");
         //TODO
     }
     
