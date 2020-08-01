@@ -60,7 +60,9 @@ TextLine TextLine::split(size_t at){
 
 void TextLine::insert(char c,size_t at){
     if(at>_len){
-        IO::exit_error("invalid position for TextLine::insert, length is %d, requested position is %d",_len,at);
+        resize(at+1,true);
+        buf[at]=c;
+        return;
     }
     resize(_len+1,false);
     if(at!=_len){//if inserting to end of line, no need to move memory
