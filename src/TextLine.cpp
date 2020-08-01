@@ -44,7 +44,18 @@ size_t TextLine::len(){
 }
 
 TextLine TextLine::split(size_t at){
-    IO::exit_error("TextLine::split unimplemented");
+    if(at>=_len){
+        IO::exit_error("invalid position for TextLine::split, length is %d, requested position is %d",_len,at);
+    }
+    
+    size_t sz=_len-at;
+    char * nbuf=(char*)calloc(sz+1,sizeof(char));
+    memcpy(nbuf,buf+at,sz+1);//copy including null terminator
+    
+    buf[at]='\0';
+    _len=at;
+    
+    return TextLine(nbuf,sz,sz+1);
 }
 
 void TextLine::insert(char c,size_t at){
