@@ -13,7 +13,7 @@ class TextLine final {
         
         ~TextLine();
         
-        TextLine split(size_t at);
+        TextLine * split(size_t at);
         void insert(char c,size_t at);
         void erase(size_t at);
         

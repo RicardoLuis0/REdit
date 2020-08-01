@@ -1,13 +1,15 @@
 #include "TextLine.h"
 #include "IOLayer.h"
+
 #include <cstdlib>
 #include <cstring>
+
 #include "Util.h"
 
 TextLine::TextLine() {
     _len=0;
     _alloc=8;//initial allocation is 8 chars
-    buf=(char*)calloc(8,sizeof(char));
+    buf=(char*)calloc(8,sizeof(char));//uses c allocation functions instead of new because of the need to use realloc
     if(buf==nullptr){
         IO::exit_error("Out of memory");
     }
@@ -43,16 +45,16 @@ size_t TextLine::len(){
     return _len;
 }
 
-TextLine TextLine::split(size_t at){
+TextLine * TextLine::split(size_t at){
     if(at>=_len){
-        return TextLine();
+        return new TextLine();
     }
     size_t sz=_len-at;
     char * nbuf=(char*)calloc(sz+1,sizeof(char));
     memcpy(nbuf,buf+at,sz+1);//copy including null terminator
     buf[at]='\0';
     _len=at;
-    return TextLine(nbuf,sz,sz+1);
+    return new TextLine(nbuf,sz,sz+1);
 }
 
 void TextLine::insert(char c,size_t at){
