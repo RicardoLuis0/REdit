@@ -89,6 +89,10 @@ namespace IO {
         WriteConsole(hStdout,&c,1,NULL,NULL);
     }
     
+    void writeChars(const char * s,size_t n){
+        WriteConsole(hStdout,s,n,NULL,NULL);
+    }
+    
     void setColor(color fg,color bg){
         SetConsoleTextAttribute(hStdout,fgcolors[fg]|bgcolors[bg]);
     }
@@ -96,7 +100,7 @@ namespace IO {
     void fillLine(int16_t line,int16_t rows,char c,color fg,color bg){
         DWORD temp;
         FillConsoleOutputCharacter(hStdout,c,rows*80,{0,line},&temp);
-        FillConsoleOutputAttribute (hStdout,fgcolors[fg]|bgcolors[bg],rows*80,{0,line},&temp);
+        FillConsoleOutputAttribute(hStdout,fgcolors[fg]|bgcolors[bg],rows*80,{0,line},&temp);
     }
     
     [[noreturn]] void exit_error(const char * fmt,...){
