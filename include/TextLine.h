@@ -15,10 +15,12 @@ class TextLine final {
         
         TextLine split(size_t at);
         void insert(char c,size_t at);
+        void erase(size_t at);
         
         const char * get();
         
         size_t len();
+        
         void trim();//reduce allocated size to used size
     private:
         void resize(size_t new_size,bool move_terminator);

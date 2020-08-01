@@ -45,16 +45,13 @@ size_t TextLine::len(){
 
 TextLine TextLine::split(size_t at){
     if(at>=_len){
-        IO::exit_error("invalid position for TextLine::split, length is %d, requested position is %d",_len,at);
+        return TextLine();
     }
-    
     size_t sz=_len-at;
     char * nbuf=(char*)calloc(sz+1,sizeof(char));
     memcpy(nbuf,buf+at,sz+1);//copy including null terminator
-    
     buf[at]='\0';
     _len=at;
-    
     return TextLine(nbuf,sz,sz+1);
 }
 
@@ -71,6 +68,12 @@ void TextLine::insert(char c,size_t at){
         buf[at+1]='\n';
     }
     buf[at]=c;
+}
+
+void TextLine::erase(size_t at){
+    if(at>=_len) return;
+    memmove(buf+at,buf+at-1,(_len-at)+1);
+    resize(_len-1,false);
 }
 
 void TextLine::resize(size_t new_size,bool move_terminator){
