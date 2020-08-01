@@ -40,4 +40,5 @@ namespace IO {
     void writeChar(char c);
     void setColor(color fg,color bg);
     void fillLine(int16_t line,int16_t rows,char c,color fg,color bg);
+    [[noreturn]] void exit_error(const char * fmt,...);
 };

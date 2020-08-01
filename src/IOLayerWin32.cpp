@@ -2,6 +2,9 @@
 
 #include "windows.h"
 
+#include <cstdlib>
+#include <cstdio>
+
 namespace IO {
     
     HANDLE hStdin;
@@ -94,5 +97,22 @@ namespace IO {
         DWORD temp;
         FillConsoleOutputCharacter(hStdout,c,rows*80,{0,line},&temp);
         FillConsoleOutputAttribute (hStdout,fgcolors[fg]|bgcolors[bg],rows*80,{0,line},&temp);
+    }
+    
+    [[noreturn]] void exit_error(const char * fmt,...){
+        va_list args1;
+        va_start(args1,fmt);
+        va_list args2;
+        va_copy(args2,args1);
+        size_t len=vsnprintf(NULL,0,fmt,args2);
+        va_end(args2);
+        char * buf=(char*)calloc(len+1,sizeof(char));
+        vsnprintf(buf,len+1,fmt,args1);
+        va_end(args1);
+        fillLine(0,25,' ',WHITE,BLACK);
+        moveCursor(0,0);
+        MessageBox(NULL,buf,"ERROR",MB_OK);
+        free(buf);
+        exit(1);
     }
 }
