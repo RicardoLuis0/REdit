@@ -61,6 +61,7 @@ void TextLine::append(const TextLine &other){
     if(other._len!=0){
         resize(_len+other._len,false);
         memcpy(buf+_len,other.buf,other._len);
+        _len+=other._len;
     }
 }
 
@@ -71,17 +72,17 @@ void TextLine::insert(char c,size_t at){
         return;
     }
     resize(_len+1,false);
-    if(at!=_len){//if inserting to end of line, no need to move memory
-        memmove(buf+at,buf+at+1,(_len-at)+1);
+    if(at!=(_len-1)){//if inserting to end of line, no need to move memory
+        memmove(buf+at+1,buf+at,(_len-at)+1);
     }else{
-        buf[at+1]='\n';
+        buf[at+1]='\0';
     }
     buf[at]=c;
 }
 
 void TextLine::erase(size_t at){
     if(at>=_len) return;
-    memmove(buf+at+1,buf+at,_len-at);
+    memmove(buf+at,buf+at+1,_len-at);
     resize(_len-1,false);
 }
 
