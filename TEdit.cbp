@@ -30,15 +30,20 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-fexceptions" />
+			<Add option="-std=c++17" />
+			<Add option="-Wno-unused-function -Werror=return-type -fno-rtti" />
 		</Compiler>
 		<Unit filename="include/IOLayer.h" />
+		<Unit filename="include/MenuEngine.h" />
+		<Unit filename="include/TextEngine.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/IOLayer.cpp" />
 		<Unit filename="src/IOLayerWin32.cpp">
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="src/MenuEngine.cpp" />
+		<Unit filename="src/TextEngine.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -27,6 +27,7 @@ namespace IO {
         ARROW_UP,
         ARROW_RIGHT,
         ARROW_DOWN,
+        ALT,
         KEY,
     };
     struct keypress {
@@ -38,4 +39,5 @@ namespace IO {
     void moveCursor(int16_t x,int16_t y);
     void writeChar(char c);
     void setColor(color fg,color bg);
+    void fillLine(int16_t line,int16_t rows,char c,color fg,color bg);
 };

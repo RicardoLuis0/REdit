@@ -15,8 +15,8 @@ namespace IO {
         FOREGROUND_RED,//RED
         FOREGROUND_RED | FOREGROUND_BLUE,//MAGENTA
         FOREGROUND_RED | FOREGROUND_GREEN,//BROWN
-        FOREGROUND_INTENSITY,//LIGHT_GREY
-        FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,//DARK_GREY
+        FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,//LIGHT_GREY
+        FOREGROUND_INTENSITY,//DARK_GREY
         FOREGROUND_INTENSITY | FOREGROUND_BLUE,//LIGHT_BLUE
         FOREGROUND_INTENSITY | FOREGROUND_GREEN,//LIGHT_GREEN
         FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE,//LIGHT_CYAN
@@ -34,8 +34,8 @@ namespace IO {
         BACKGROUND_RED,//RED
         BACKGROUND_RED | BACKGROUND_BLUE,//MAGENTA
         BACKGROUND_RED | BACKGROUND_GREEN,//BROWN
-        BACKGROUND_INTENSITY,//LIGHT_GREY
-        BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE,//DARK_GREY
+        BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE,//LIGHT_GREY
+        BACKGROUND_INTENSITY,//DARK_GREY
         BACKGROUND_INTENSITY | BACKGROUND_BLUE,//LIGHT_BLUE
         BACKGROUND_INTENSITY | BACKGROUND_GREEN,//LIGHT_GREEN
         BACKGROUND_INTENSITY | BACKGROUND_GREEN | BACKGROUND_BLUE,//LIGHT_CYAN
@@ -70,6 +70,8 @@ namespace IO {
                         return {0,ARROW_RIGHT,k.wRepeatCount};
                     case VK_DOWN:
                         return {0,ARROW_DOWN,k.wRepeatCount};
+                    case VK_MENU:
+                        return {0,ALT,k.wRepeatCount};
                     }
                 }
             }
@@ -86,5 +88,11 @@ namespace IO {
     
     void setColor(color fg,color bg){
         SetConsoleTextAttribute(hStdout,fgcolors[fg]|bgcolors[bg]);
+    }
+    
+    void fillLine(int16_t line,int16_t rows,char c,color fg,color bg){
+        DWORD temp;
+        FillConsoleOutputCharacter(hStdout,c,rows*80,{0,line},&temp);
+        FillConsoleOutputAttribute (hStdout,fgcolors[fg]|bgcolors[bg],rows*80,{0,line},&temp);
     }
 }
