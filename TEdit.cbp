@@ -36,6 +36,8 @@
 		<Unit filename="include/IOLayer.h" />
 		<Unit filename="include/MenuEngine.h" />
 		<Unit filename="include/TextEngine.h" />
+		<Unit filename="include/TextLine.h" />
+		<Unit filename="include/Util.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/IOLayer.cpp" />
 		<Unit filename="src/IOLayerWin32.cpp">
@@ -44,6 +46,7 @@
 		</Unit>
 		<Unit filename="src/MenuEngine.cpp" />
 		<Unit filename="src/TextEngine.cpp" />
+		<Unit filename="src/TextLine.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
