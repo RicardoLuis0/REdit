@@ -28,6 +28,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="all" targets="Debug;Release;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
@@ -35,6 +38,7 @@
 		</Compiler>
 		<Unit filename="include/IOLayer.h" />
 		<Unit filename="include/MenuEngine.h" />
+		<Unit filename="include/Text.h" />
 		<Unit filename="include/TextEngine.h" />
 		<Unit filename="include/TextLine.h" />
 		<Unit filename="include/Util.h" />
@@ -45,6 +49,7 @@
 			<Option link="0" />
 		</Unit>
 		<Unit filename="src/MenuEngine.cpp" />
+		<Unit filename="src/Text.cpp" />
 		<Unit filename="src/TextEngine.cpp" />
 		<Unit filename="src/TextLine.cpp" />
 		<Unit filename="src/Util.cpp" />
