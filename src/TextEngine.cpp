@@ -1,5 +1,6 @@
 #include "TextEngine.h"
 #include "Text.h"
+#include "Util.h"
 
 #include <cstdio>
 
@@ -10,6 +11,8 @@ namespace TextEngine {
     }
     
     int16_t x,y;
+    
+    int16_t lpos;
     
     int16_t x_min,x_max,y_min,y_max;
     
@@ -45,63 +48,73 @@ namespace TextEngine {
         IO::moveCursor(x,y);
     }
     
-    static void x_plus(bool wrap=false){
-        if(x==x_max){
-            if(y==y_max){
-                if(wrap){
-                    x=x_min;
-                    y=y_min;
+    static void x_line(bool always_redraw=false){
+        if(data.size()>(view_y+y)){
+            size_t pos=min<size_t>(data.get(view_y+y).len(),lpos);
+            auto view_x_old=view_x;
+            while(!(pos>=view_x)&&pos<(view_x+x_max)){
+                if(pos>=view_x){
+                    view_x+=x_max;
+                }else{
+                    view_x-=x_max;
                 }
-            }else{
-                x=x_min;
-                y++;
             }
+            x=pos-view_x;
+            if(always_redraw||view_x_old!=view_x) redraw_full();
         }else{
-            x++;
+            x=0;
+            if(always_redraw) redraw_full();
         }
-        IO::moveCursor(x,y);
     }
     
-    static void x_minus(bool wrap=false,bool use_xmin=true){
-        if(x==x_min){
-            if(y==y_min){
-                if(wrap){
-                    x=use_xmin?x_min:x_max;
-                    y=y_max;
-                }
-            }else{
-                x=use_xmin?x_min:x_max;
-                y--;
-            }
-        }else{
-            x--;
-        }
-        IO::moveCursor(x,y);
-    }
-    
-    static void y_plus(bool wrap=false){
-        if(y==y_max){
-            if(wrap){
-                x=x_min;
-                y=y_min;
-            }
-        }else{
-            x=x_min;
+    static void y_plus(){
+        if(y<y_max){
             y++;
+            x_line();
+        }else{
+            view_y++;
+            x_line(true);
         }
         IO::moveCursor(x,y);
     }
     
-    static void y_minus(bool wrap=false,bool use_xmin=true){
-        if(y==y_min){
-            if(wrap){
-                x=use_xmin?x_min:x_max;
-                y=y_max;
-            }
-        }else{
-            x=use_xmin?x_min:x_max;
+    static void y_minus(){
+        if(y>y_min){
             y--;
+            x_line();
+        }else if(view_y>0){
+            view_y--;
+            x_line(true);
         }
+        IO::moveCursor(x,y);
+    }
+    
+    static void x_plus(){
+        if(data.size()>(view_y+y)&&(data.get(view_y+y).len()>(x+view_x))){
+            x++;
+        }else{
+            x=0;
+            view_x=0;
+            if(y<y_max){
+                y++;
+            }else{
+                view_y++;
+                redraw_full();
+            }
+        }
+        lpos=x+view_x;
+        IO::moveCursor(x,y);
+    }
+    
+    static void x_minus(){
+        if(x>x_min){
+            x--;
+        }else if(y>y_min){
+            y--;
+            if(data.size()>(view_y+y))lpos=data.get(view_y+y).len();
+            x_line();
+        }
+        lpos=x+view_x;
         IO::moveCursor(x,y);
     }
     
@@ -123,31 +136,16 @@ namespace TextEngine {
             if(y>0){
                 if(data.size()>(view_y+y)){
                     auto & a=data.get(view_y+y-1);
-                    size_t pos=a.len();
+                    lpos=a.len();
                     auto & b=data.get(view_y+y);
                     a.append(b);
                     data.erase(view_y+y);
                     y_minus();
-                    while(!((pos>=view_x)&&pos<(view_x+x_max))){
-                        if(pos>view_x){
-                            view_x+=x_max;
-                        }else{
-                            view_x-=x_max;
-                        }
-                    }
-                    x=pos-view_x;
-                    redraw_full();
+                    x_line(true);
                 }else{
-                    size_t pos=data.get(view_y+y-1).len();
+                    lpos=data.get(view_y+y-1).len();
                     y_minus();
-                    while(!(pos>view_x)&&pos<(view_x+x_max)){
-                        if(pos>view_x){
-                            view_x+=x_max;
-                        }else{
-                            view_x-=x_max;
-                        }
-                    }
-                    x=pos-view_x;
+                    x_line();
                 }
             }
         }else{
@@ -156,6 +154,15 @@ namespace TextEngine {
             l.erase(view_x+x);
             redraw_line(y);
         }
+    }
+    
+    void newline(){
+        if((y+view_y)<data.size()){
+            data.insert(y+1,data.get(y+view_y).split(x+view_x));
+        }
+        lpos=0;
+        y_plus();
+        redraw_full();
     }
     
     void init(int16_t off){
@@ -171,39 +178,23 @@ namespace TextEngine {
         y_mmax=25-off;
         view_x=0;
         view_y=0;
+        lpos=0;
         IO::moveCursor(x,y);
     }
     
     void handle_input(IO::keypress key){
         switch(key.type){
             case IO::ARROW_UP:
-                if(y>y_min)y--;
-                IO::moveCursor(x,y);
+                y_minus();
                 break;
             case IO::ARROW_DOWN:
-                if(y<y_max)y++;
-                IO::moveCursor(x,y);
+                y_plus();
                 break;
             case IO::ARROW_LEFT:
-                if(x>x_min){
-                    x--;
-                }else if(y>y_min){
-                    y--;
-                    size_t pos=data.get(view_y+y).len();
-                    while(!(pos>view_x)&&pos<(view_x+x_max)){
-                        if(pos>view_x){
-                            view_x+=x_max;
-                        }else{
-                            view_x-=x_max;
-                        }
-                    }
-                    x=pos-view_x;
-                }
-                IO::moveCursor(x,y);
+                x_minus();
                 break;
             case IO::ARROW_RIGHT:
-                if(x<x_max)x++;
-                IO::moveCursor(x,y);
+                x_plus();
                 break;
             case IO::KEY:
                 while(key.count--){
@@ -216,16 +207,12 @@ namespace TextEngine {
                         break;
                     case '\n':
                     case '\r':
-                        if((y+view_y)<data.size()){
-                            data.insert(y+1,data.get(y+view_y).split(x+view_x));
-                        }
-                        y_plus();
-                        redraw_full();
+                        newline();
                         break;
                     case '\t':
                         do{
                             write(' ');
-                        }while(x%4);
+                        }while((view_x+x)%4);
                         break;
                     default:
                         if(isgraph(key.key)){
@@ -237,13 +224,15 @@ namespace TextEngine {
         }
     }
     
-    void save(const char * filename){
+    int save(const char * filename){
         FILE * f=fopen(filename,"w");
+        if(!f)return 0;
         for(size_t i=0;i<data.size();i++){
             fputs(data.get(i).get(),f);
             fputc('\n',f);
         }
         fclose(f);
+        return 1;
     }
     
 }
