@@ -38,6 +38,10 @@
 		</Compiler>
 		<Unit filename="src/IOLayer.cpp" />
 		<Unit filename="src/IOLayer.h" />
+		<Unit filename="src/IOLayerOsDevV2.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/IOLayerWin32.cpp">
 			<Option compile="0" />
 			<Option link="0" />
