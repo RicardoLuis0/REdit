@@ -1,13 +1,10 @@
 #include "TextEngine.h"
 #include "Util.h"
+#include <ctype.h>
 
 #include <stdio.h>
 
 namespace TextEngine {
-    
-    int isgraph(int c){
-        return (c>='A'&&c<='Z')||(c>='a'&&c<='z')||(c>='0'&&c<='9')||(c>='!'&&c<='/')||(c>=':'&&c<='@')||(c>='['&&c<='`')||(c>='{'&&c<='~');
-    }
     
     int16_t x,y;
     

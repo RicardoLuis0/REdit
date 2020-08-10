@@ -4,17 +4,12 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #define MAX(x,y)((x)>(y)?(x):(y))
 #define MIN(x,y)((x)<(y)?(x):(y))
 
 extern bool do_loop;
-
-namespace TextEngine {
-    int isgraph(int c);
-}
-
-using TextEngine::isgraph;
 
 namespace MenuEngine {
     
@@ -24,6 +19,12 @@ namespace MenuEngine {
     char * filename=nullptr;
     size_t filename_len=0;
     constexpr size_t filename_max=40;
+    
+    void setfile(const char * s){
+        strncpy(filename,s,filename_max);
+        filename[filename_max]='\0';
+        filename_len=strlen(filename);
+    }
     
     bool fullscreen=false;
     
@@ -35,7 +36,6 @@ namespace MenuEngine {
     
     void init(){
         filename=(char*)calloc(filename_max+1,1);
-        draw(false);
     }
     
     int16_t getHeight(){

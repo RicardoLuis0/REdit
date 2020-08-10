@@ -9,5 +9,6 @@ namespace MenuEngine {
     int16_t getHeight();
     void draw(bool focused);
     bool handle_input(IOLayer::keypress key);
+    void setfile(const char * c);
     bool is_fullscreen();
 };
