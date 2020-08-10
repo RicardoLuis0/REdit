@@ -2,21 +2,35 @@
 #include "TextEngine.h"
 #include "MenuEngine.h"
 
-int main() {
+bool do_loop=true;
+
+int main(int argc,char ** argv) {
     IO::init();
+    Text data;
+    if(argc==2){
+        
+    }else if(argc>2){
+        IO::writeStr("\nInvalid Number of Arguments, must be zero or 1\n");
+        return 1;
+    }
     MenuEngine::init();
-    TextEngine::init(MenuEngine::getHeight());
+    TextEngine::init(MenuEngine::getHeight(),&data);
     bool in_menu=false;
-    while(1){
+    while(do_loop){
         auto key=IO::get_key();
-        if(key.type==IO::ALT){
-            in_menu=!in_menu;
-        }else if(in_menu){
-            MenuEngine::handle_input(key);
+        if(in_menu){
+            in_menu=MenuEngine::handle_input(key);
+            if(!in_menu&&MenuEngine::is_fullscreen()){
+                TextEngine::redraw_full();
+            }
+        }else if(key.type==IO::ALT){
+            in_menu=true;
         }else{
             TextEngine::handle_input(key);
         }
-        MenuEngine::draw(in_menu);
+        if(in_menu||!MenuEngine::is_fullscreen()){
+            MenuEngine::draw(in_menu);
+        }
     }
     return 0;
 }

@@ -1,12 +1,11 @@
 #include "TextEngine.h"
-#include "Text.h"
 #include "Util.h"
 
 #include <cstdio>
 
 namespace TextEngine {
     
-    static int isgraph(int c){
+    int isgraph(int c){
         return (c>='A'&&c<='Z')||(c>='a'&&c<='z')||(c>='0'&&c<='9')||(c>='!'&&c<='/')||(c>=':'&&c<='@')||(c>='['&&c<='`')||(c>='{'&&c<='~');
     }
     
@@ -20,26 +19,26 @@ namespace TextEngine {
     
     uint32_t view_x,view_y;
     
-    Text data;
+    Text * data;
     
     static void redraw_line(size_t i){
         IO::moveCursor(0,i);
         IO::fillLine(i,1,' ',IO::WHITE,IO::BLACK);
-        size_t max=data.size();
+        size_t max=data->size();
         if((i+view_y)>max)return;
-        auto &l=data.get(i+view_y);
+        auto &l=data->get(i+view_y);
         if(view_x<l.len()){
             IO::writeChars(l.get()+view_x,l.len()-view_x);
         }
         IO::moveCursor(x,y);
     }
     
-    static void redraw_full(){//FULL REDRAW, SLOW
-        IO::fillLine(0,24,' ',IO::WHITE,IO::BLACK);
-        size_t max=data.size();
-        for(int i=0;i<24;i++){
+    void redraw_full(){//FULL REDRAW, SLOW
+        IO::fillLine(0,y_mmax,' ',IO::WHITE,IO::BLACK);
+        size_t max=data->size();
+        for(int i=0;i<y_mmax;i++){
             if((i+view_y)>=max)break;
-            auto &l=data.get(i+view_y);
+            auto &l=data->get(i+view_y);
             if(view_x<l.len()){
                 IO::moveCursor(0,i);
                 IO::writeChars(l.get()+view_x,l.len()-view_x);
@@ -49,8 +48,8 @@ namespace TextEngine {
     }
     
     static void x_line(bool always_redraw=false){
-        if(data.size()>(view_y+y)){
-            size_t pos=min<size_t>(data.get(view_y+y).len(),lpos);
+        if(data->size()>(view_y+y)){
+            size_t pos=min<size_t>(data->get(view_y+y).len(),lpos);
             auto view_x_old=view_x;
             while(!(pos>=view_x)&&pos<(view_x+x_max)){
                 if(pos>=view_x){
@@ -90,7 +89,7 @@ namespace TextEngine {
     }
     
     static void x_plus(){
-        if(data.size()>(view_y+y)&&(data.get(view_y+y).len()>(x+view_x))){
+        if(data->size()>(view_y+y)&&(data->get(view_y+y).len()>(x+view_x))){
             x++;
         }else{
             x=0;
@@ -111,7 +110,7 @@ namespace TextEngine {
             x--;
         }else if(y>y_min){
             y--;
-            if(data.size()>(view_y+y))lpos=data.get(view_y+y).len();
+            if(data->size()>(view_y+y))lpos=data->get(view_y+y).len();
             x_line();
         }
         lpos=x+view_x;
@@ -119,7 +118,7 @@ namespace TextEngine {
     }
     
     static void write(char c){
-        auto &l=data.get(y+view_y);
+        auto &l=data->get(y+view_y);
         if((x+view_x)<(l.len())){
             l.insert(c,x+view_x);
             x_plus();
@@ -134,38 +133,38 @@ namespace TextEngine {
     static void erase(){
         if(x==0){
             if(y>0){
-                if(data.size()>(view_y+y)){
-                    auto & a=data.get(view_y+y-1);
+                if(data->size()>(view_y+y)){
+                    auto & a=data->get(view_y+y-1);
                     lpos=a.len();
-                    auto & b=data.get(view_y+y);
+                    auto & b=data->get(view_y+y);
                     a.append(b);
-                    data.erase(view_y+y);
+                    data->erase(view_y+y);
                     y_minus();
                     x_line(true);
                 }else{
-                    lpos=data.get(view_y+y-1).len();
+                    lpos=data->get(view_y+y-1).len();
                     y_minus();
                     x_line();
                 }
             }
         }else{
             x_minus();
-            auto & l=data.get(view_y+y);
+            auto & l=data->get(view_y+y);
             l.erase(view_x+x);
             redraw_line(y);
         }
     }
     
     void newline(){
-        if((y+view_y)<data.size()){
-            data.insert(y+1,data.get(y+view_y).split(x+view_x));
+        if((y+view_y)<data->size()){
+            data->insert(y+1,data->get(y+view_y).split(x+view_x));
         }
         lpos=0;
         y_plus();
         redraw_full();
     }
     
-    void init(int16_t off){
+    void init(int16_t off,Text * t_data){
         x_min=0;
         x_mmin=-1;
         x=0;
@@ -180,6 +179,13 @@ namespace TextEngine {
         view_y=0;
         lpos=0;
         IO::moveCursor(x,y);
+        data=t_data;
+    }
+    
+    void set_offset(int16_t off){
+        y_max=24-off;
+        y_mmax=25-off;
+        if(y==y_mmax)y_minus();
     }
     
     void handle_input(IO::keypress key){
@@ -227,12 +233,16 @@ namespace TextEngine {
     int save(const char * filename){
         FILE * f=fopen(filename,"w");
         if(!f)return 0;
-        for(size_t i=0;i<data.size();i++){
-            fputs(data.get(i).get(),f);
+        for(size_t i=0;i<data->size();i++){
+            fputs(data->get(i).get(),f);
             fputc('\n',f);
         }
         fclose(f);
         return 1;
+    }
+    
+    void update_cursor(){
+        IO::moveCursor(x,y);
     }
     
 }

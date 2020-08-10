@@ -52,6 +52,8 @@ namespace IO {
         hStdin=GetStdHandle(STD_INPUT_HANDLE);
         hStdout=GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleScreenBufferSize(hStdout,{80,25});
+        SMALL_RECT window={0,0,79,24};
+        SetConsoleWindowInfo(hStdout,true,&window);
     }
     
     keypress get_key(){
@@ -91,6 +93,10 @@ namespace IO {
     
     void writeChars(const char * s,size_t n){
         WriteConsole(hStdout,s,n,NULL,NULL);
+    }
+    
+    void writeStr(const char * s){
+        WriteConsole(hStdout,s,strlen(s),NULL,NULL);
     }
     
     void setColor(color fg,color bg){
