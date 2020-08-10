@@ -4,7 +4,7 @@
 
 bool do_loop=true;
 
-int main(int argc,char ** argv) {
+int tedit_main(int argc,char ** argv) {
     IOLayer::init();
     Text data;
     if(argc==2){

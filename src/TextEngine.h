@@ -3,7 +3,7 @@
 #include "IOLayer.h"
 #include "Text.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace TextEngine {
     void init(int16_t menu_size,Text * t_data);

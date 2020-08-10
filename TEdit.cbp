@@ -36,23 +36,23 @@
 			<Add option="-std=c++17" />
 			<Add option="-Wno-unused-function -Werror=return-type -fno-rtti" />
 		</Compiler>
-		<Unit filename="include/IOLayer.h" />
-		<Unit filename="include/MenuEngine.h" />
-		<Unit filename="include/Text.h" />
-		<Unit filename="include/TextEngine.h" />
-		<Unit filename="include/TextLine.h" />
-		<Unit filename="include/Util.h" />
-		<Unit filename="main.cpp" />
 		<Unit filename="src/IOLayer.cpp" />
+		<Unit filename="src/IOLayer.h" />
 		<Unit filename="src/IOLayerWin32.cpp">
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
 		<Unit filename="src/MenuEngine.cpp" />
+		<Unit filename="src/MenuEngine.h" />
 		<Unit filename="src/Text.cpp" />
+		<Unit filename="src/Text.h" />
 		<Unit filename="src/TextEngine.cpp" />
+		<Unit filename="src/TextEngine.h" />
 		<Unit filename="src/TextLine.cpp" />
+		<Unit filename="src/TextLine.h" />
 		<Unit filename="src/Util.cpp" />
+		<Unit filename="src/Util.h" />
+		<Unit filename="src/main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -5,6 +5,11 @@
 #include <cstdlib>
 #include <cstdio>
 
+int tedit_main(int,char **);
+int main(int argc,char ** argv) {
+    return tedit_main(argc,argv);
+}
+
 namespace IOLayer {
     
     HANDLE hStdin;

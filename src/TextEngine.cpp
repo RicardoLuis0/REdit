@@ -1,7 +1,7 @@
 #include "TextEngine.h"
 #include "Util.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 namespace TextEngine {
     

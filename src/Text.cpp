@@ -1,7 +1,7 @@
 #include "Text.h"
 
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 
 Text::Text(Text && other):lines(other.lines),_alloc(other._alloc){
     other.lines=nullptr;

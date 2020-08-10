@@ -1,6 +1,7 @@
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
+#include <stddef.h>
 
 class TextLine final {
         TextLine(const TextLine &other)=delete;

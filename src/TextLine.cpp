@@ -1,8 +1,8 @@
 #include "TextLine.h"
 #include "IOLayer.h"
 
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 
 #include "Util.h"
 
