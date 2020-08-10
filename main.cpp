@@ -32,5 +32,7 @@ int main(int argc,char ** argv) {
             MenuEngine::draw(in_menu);
         }
     }
+    IOLayer::fillLine(0,25,' ',IOLayer::WHITE,IOLayer::BLACK);
+    IOLayer::moveCursor(0,0);
     return 0;
 }
