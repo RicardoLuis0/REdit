@@ -22,29 +22,29 @@ namespace TextEngine {
     Text * data;
     
     static void redraw_line(size_t i){
-        IO::moveCursor(0,i);
-        IO::fillLine(i,1,' ',IO::WHITE,IO::BLACK);
+        IOLayer::moveCursor(0,i);
+        IOLayer::fillLine(i,1,' ',IOLayer::WHITE,IOLayer::BLACK);
         size_t max=data->size();
         if((i+view_y)>max)return;
         auto &l=data->get(i+view_y);
         if(view_x<l.len()){
-            IO::writeChars(l.get()+view_x,l.len()-view_x);
+            IOLayer::writeChars(l.get()+view_x,l.len()-view_x);
         }
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
     void redraw_full(){//FULL REDRAW, SLOW
-        IO::fillLine(0,y_mmax,' ',IO::WHITE,IO::BLACK);
+        IOLayer::fillLine(0,y_mmax,' ',IOLayer::WHITE,IOLayer::BLACK);
         size_t max=data->size();
         for(int i=0;i<y_mmax;i++){
             if((i+view_y)>=max)break;
             auto &l=data->get(i+view_y);
             if(view_x<l.len()){
-                IO::moveCursor(0,i);
-                IO::writeChars(l.get()+view_x,l.len()-view_x);
+                IOLayer::moveCursor(0,i);
+                IOLayer::writeChars(l.get()+view_x,l.len()-view_x);
             }
         }
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
     static void x_line(bool always_redraw=false){
@@ -74,7 +74,7 @@ namespace TextEngine {
             view_y++;
             x_line(true);
         }
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
     static void y_minus(){
@@ -85,7 +85,7 @@ namespace TextEngine {
             view_y--;
             x_line(true);
         }
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
     static void x_plus(){
@@ -102,7 +102,7 @@ namespace TextEngine {
             }
         }
         lpos=x+view_x;
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
     static void x_minus(){
@@ -114,7 +114,7 @@ namespace TextEngine {
             x_line();
         }
         lpos=x+view_x;
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
     static void write(char c){
@@ -125,7 +125,7 @@ namespace TextEngine {
             redraw_line(y);
         }else{
             l.insert(c,x+view_x);
-            IO::writeChar(c);
+            IOLayer::writeChar(c);
             x_plus();
         }
     }
@@ -178,7 +178,7 @@ namespace TextEngine {
         view_x=0;
         view_y=0;
         lpos=0;
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
         data=t_data;
     }
     
@@ -188,21 +188,21 @@ namespace TextEngine {
         if(y==y_mmax)y_minus();
     }
     
-    void handle_input(IO::keypress key){
+    void handle_input(IOLayer::keypress key){
         switch(key.type){
-            case IO::ARROW_UP:
+            case IOLayer::ARROW_UP:
                 y_minus();
                 break;
-            case IO::ARROW_DOWN:
+            case IOLayer::ARROW_DOWN:
                 y_plus();
                 break;
-            case IO::ARROW_LEFT:
+            case IOLayer::ARROW_LEFT:
                 x_minus();
                 break;
-            case IO::ARROW_RIGHT:
+            case IOLayer::ARROW_RIGHT:
                 x_plus();
                 break;
-            case IO::KEY:
+            case IOLayer::KEY:
                 while(key.count--){
                     switch(key.key){
                     case ' ':
@@ -242,7 +242,7 @@ namespace TextEngine {
     }
     
     void update_cursor(){
-        IO::moveCursor(x,y);
+        IOLayer::moveCursor(x,y);
     }
     
 }

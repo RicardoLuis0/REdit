@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-namespace IO {
+namespace IOLayer {
     
     HANDLE hStdin;
     HANDLE hStdout;

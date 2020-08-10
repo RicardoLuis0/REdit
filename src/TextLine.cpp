@@ -11,7 +11,7 @@ TextLine::TextLine() {
     _alloc=8;//initial allocation is 8 chars
     buf=(char*)calloc(8,sizeof(char));//uses c allocation functions instead of new because of the need to use realloc
     if(buf==nullptr){
-        IO::exit_error("Out of memory");
+        IOLayer::exit_error("Out of memory");
     }
     buf[0]='\0';
 }

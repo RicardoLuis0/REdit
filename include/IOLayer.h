@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace IO {
+namespace IOLayer {
     void init();
     enum color {
         BLACK = 0,

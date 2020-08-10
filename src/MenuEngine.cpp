@@ -44,50 +44,50 @@ namespace MenuEngine {
     
     void draw(bool focused){
         if(focused){
-            IO::fillLine(line,height,' ',IO::BLACK,IO::WHITE);
-            IO::setColor(IO::DARK_GREY,IO::WHITE);
-            IO::moveCursor(0,line);
+            IOLayer::fillLine(line,height,' ',IOLayer::BLACK,IOLayer::WHITE);
+            IOLayer::setColor(IOLayer::DARK_GREY,IOLayer::WHITE);
+            IOLayer::moveCursor(0,line);
             switch(state){
             case STATE_NONE:
-                IO::writeStr("S - Save, Q - Quit, F - Fullscreen");
+                IOLayer::writeStr("S - Save, Q - Quit, F - Fullscreen");
                 break;
             case STATE_SAVING:
-                IO::writeStr("Save As: ");
-                IO::writeChars(filename,filename_len);
+                IOLayer::writeStr("Save As: ");
+                IOLayer::writeChars(filename,filename_len);
                 return;
             case STATE_QUITCONFIRM:
-                IO::writeStr("Quit? (Y/N)");
+                IOLayer::writeStr("Quit? (Y/N)");
                 return;
             }
         }else{
-            IO::fillLine(line,height,' ',IO::BLACK,IO::DARK_GREY);
-            IO::setColor(IO::WHITE,IO::DARK_GREY);
-            IO::moveCursor(0,line);
-            IO::writeStr("File: ");
+            IOLayer::fillLine(line,height,' ',IOLayer::BLACK,IOLayer::DARK_GREY);
+            IOLayer::setColor(IOLayer::WHITE,IOLayer::DARK_GREY);
+            IOLayer::moveCursor(0,line);
+            IOLayer::writeStr("File: ");
             if(filename_len>0){
-                IO::writeChars(filename,filename_len);
+                IOLayer::writeChars(filename,filename_len);
             }else{
-                IO::writeStr("...");
+                IOLayer::writeStr("...");
             }
         }
-        IO::setColor(IO::WHITE,IO::BLACK);
+        IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
         TextEngine::update_cursor();
     }
     
-    bool handle_input(IO::keypress key){
+    bool handle_input(IOLayer::keypress key){
         switch(state){
         case STATE_SAVING:
             if(key.key=='\n'||key.key=='\r'){//confirm
                 if(TextEngine::save(filename)){
                     state=STATE_NONE;
-                    IO::setColor(IO::WHITE,IO::BLACK);
+                    IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
                     TextEngine::update_cursor();
                     return false;
                 }
                 return true;
             }else if(key.key=='\e'){//cancel
                 state=STATE_NONE;
-                IO::setColor(IO::WHITE,IO::BLACK);
+                IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
                 TextEngine::update_cursor();
                 return false;
             }else if(key.key=='\b'&&filename_len>0){
@@ -105,13 +105,13 @@ namespace MenuEngine {
                 return false;
             }else if(key.key=='n'||key.key=='N'||key.key=='\e'){
                 state=STATE_NONE;
-                IO::setColor(IO::WHITE,IO::BLACK);
+                IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
                 TextEngine::update_cursor();
                 return false;
             }
             return true;
         case STATE_NONE:
-            if(key.type==IO::ALT){
+            if(key.type==IOLayer::ALT){
                 return false;
             }else if(key.key=='s'||key.key=='S'){
                 state=STATE_SAVING;
