@@ -38,6 +38,10 @@ namespace MenuEngine {
         filename=(char*)calloc(filename_max+1,1);
     }
     
+    void quit(){
+        free(filename);
+    }
+    
     int16_t getHeight(){
         return height;
     }

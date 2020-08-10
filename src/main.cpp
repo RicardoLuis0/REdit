@@ -6,9 +6,10 @@
 #include <string.h>
 #include <ctype.h>
 
-bool do_loop=true;
+bool do_loop;
 
 int tedit_main(int argc,char ** argv) {
+    do_loop=true;
     IOLayer::init();
     Text data;
     MenuEngine::init();
@@ -63,6 +64,7 @@ int tedit_main(int argc,char ** argv) {
             MenuEngine::draw(in_menu);
         }
     }
+    MenuEngine::quit();
     IOLayer::fillLine(0,25,' ',IOLayer::WHITE,IOLayer::BLACK);
     IOLayer::moveCursor(0,0);
     return 0;

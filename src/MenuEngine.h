@@ -11,4 +11,5 @@ namespace MenuEngine {
     bool handle_input(IOLayer::keypress key);
     void setfile(const char * c);
     bool is_fullscreen();
+    void quit();
 };
