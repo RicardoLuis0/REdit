@@ -73,7 +73,7 @@ void TextLine::insert(char c,size_t at){
     }
     resize(_len+1,false);
     if(at!=(_len-1)){//if inserting to end of line, no need to move memory
-        memmove(buf+at+1,buf+at,(_len-at)+1);
+        memmove(buf+at+1,buf+at,_len-at);
     }else{
         buf[at+1]='\0';
     }
