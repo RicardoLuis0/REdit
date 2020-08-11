@@ -104,12 +104,18 @@ void TextLine::grow(size_t to){
     if(to<=_alloc)return;//only allow growth
     size_t ns=max(_alloc*2,to);//double or grow to necessary, whichever is largest
     buf=(char*)realloc(buf,sizeof(char)*ns);
+    if(!buf){
+        IOLayer::exit_error("REALLOC FAILED");
+    }
     _alloc=ns;
 }
 
 void TextLine::trim(){
     if(_alloc>(_len+1)){
         buf=(char*)realloc(buf,_len+1);
+        if(!buf){
+            IOLayer::exit_error("REALLOC FAILED");
+        }
         _alloc=_len+1;
     }
 }
