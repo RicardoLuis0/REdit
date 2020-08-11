@@ -16,6 +16,8 @@ namespace TextEngine {
     
     uint32_t view_x,view_y;
     
+    bool virtual_whitespace=false;
+    
     Text * data;
     
     static void redraw_line(size_t i){
@@ -65,8 +67,10 @@ namespace TextEngine {
     
     static void y_plus(){
         if(y<y_max){
-            y++;
-            x_line();
+            if(virtual_whitespace||(y+view_y)<(data->size()-1)){
+                y++;
+                x_line();
+            }
         }else{
             view_y++;
             x_line(true);
@@ -130,7 +134,7 @@ namespace TextEngine {
     static void erase(){
         if(x==0){
             if(y>0){
-                if(data->size()>(view_y+y)){
+                if((view_y+y)<data->size()){
                     auto & a=data->get(view_y+y-1);
                     lpos=a.len();
                     auto & b=data->get(view_y+y);
@@ -153,8 +157,8 @@ namespace TextEngine {
     }
     
     void newline(){
-        if((y+view_y)<data->size()){
-            data->insert(y+1,data->get(y+view_y).split(x+view_x));
+        if(!virtual_whitespace||(y+view_y)<data->size()){
+            data->insert(y+view_y+1,data->get(y+view_y).split(x+view_x));
         }
         lpos=0;
         y_plus();
