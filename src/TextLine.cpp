@@ -6,6 +6,8 @@
 
 #include "Util.h"
 
+using namespace TEdit;
+
 TextLine::TextLine() {
     _len=0;
     _alloc=8;//initial allocation is 8 chars

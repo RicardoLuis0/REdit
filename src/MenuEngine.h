@@ -4,7 +4,7 @@
 
 #include "IOLayer.h"
 
-namespace MenuEngine {
+namespace TEdit::MenuEngine {
     void init();
     int16_t getHeight();
     void draw(bool focused);

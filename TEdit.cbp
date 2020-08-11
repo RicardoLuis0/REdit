@@ -56,7 +56,7 @@
 		<Unit filename="src/TextLine.h" />
 		<Unit filename="src/Util.cpp" />
 		<Unit filename="src/Util.h" />
-		<Unit filename="src/main.cpp" />
+		<Unit filename="src/tedit_main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

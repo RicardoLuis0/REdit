@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-namespace TextEngine {
+namespace TEdit::TextEngine {
     
     int16_t x,y;
     

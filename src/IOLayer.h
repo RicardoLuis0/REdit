@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-namespace IOLayer {
+namespace TEdit::IOLayer {
     void init();
     enum color {
         BLACK = 0,

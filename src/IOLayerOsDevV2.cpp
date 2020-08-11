@@ -4,7 +4,7 @@
 #include "stdarg.h"
 #include "stdio.h"
 
-namespace IOLayer {
+namespace TEdit::IOLayer {
     
     void init(){
         

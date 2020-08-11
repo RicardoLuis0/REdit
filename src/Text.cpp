@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+using namespace TEdit;
+
 Text::Text(Text && other):lines(other.lines),_alloc(other._alloc){
     other.lines=nullptr;
     other._alloc=0;

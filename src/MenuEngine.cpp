@@ -9,9 +9,11 @@
 #define MAX(x,y)((x)>(y)?(x):(y))
 #define MIN(x,y)((x)<(y)?(x):(y))
 
-extern bool do_loop;
+namespace TEdit {
+    extern bool do_loop;
+}
 
-namespace MenuEngine {
+namespace TEdit::MenuEngine {
     
     int16_t line=24;
     int16_t height=1;

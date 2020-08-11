@@ -2,15 +2,18 @@
 
 #include "windows.h"
 
-#include <cstdlib>
-#include <cstdio>
+#include <stdlib.h>
+#include <stdio.h>
 
-int tedit_main(int,char **);
-int main(int argc,char ** argv) {
-    return tedit_main(argc,argv);
+namespace TEdit {
+    int tedit_main(int,char **);
 }
 
-namespace IOLayer {
+int main(int argc,char ** argv) {
+    return TEdit::tedit_main(argc,argv);
+}
+
+namespace TEdit::IOLayer {
     
     HANDLE hStdin;
     HANDLE hStdout;
