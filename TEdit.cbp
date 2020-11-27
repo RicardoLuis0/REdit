@@ -33,11 +33,15 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++17" />
+			<Add option="-std=c++14" />
 			<Add option="-Wno-unused-function -Werror=return-type -fno-rtti" />
 		</Compiler>
 		<Unit filename="src/IOLayer.cpp" />
 		<Unit filename="src/IOLayer.h" />
+		<Unit filename="src/IOLayerNix.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/IOLayerOsDevV2.cpp">
 			<Option compile="0" />
 			<Option link="0" />

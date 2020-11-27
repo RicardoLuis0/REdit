@@ -66,8 +66,8 @@ namespace TEdit::MenuEngine {
                 return;
             }
         }else{
-            IOLayer::fillLine(line,height,' ',IOLayer::WHITE,IOLayer::LIGHT_GREY);
-            IOLayer::setColor(IOLayer::WHITE,IOLayer::LIGHT_GREY);
+            IOLayer::fillLine(line,height,' ',IOLayer::BLACK,IOLayer::LIGHT_GREY);
+            IOLayer::setColor(IOLayer::BLACK,IOLayer::LIGHT_GREY);
             IOLayer::moveCursor(0,line);
             IOLayer::writeStr("File: ");
             if(filename_len>0){
@@ -117,7 +117,7 @@ namespace TEdit::MenuEngine {
             }
             return true;
         case STATE_NONE:
-            if(key.type==IOLayer::ALT){
+            if(key.type==IOLayer::ALT||(key.type==IOLayer::KEY&&(key.key=='\e'||key.key==20))){
                 return false;
             }else if(key.key=='s'||key.key=='S'){
                 state=STATE_SAVING;

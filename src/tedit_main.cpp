@@ -56,7 +56,7 @@ namespace TEdit {
                 if(!in_menu&&MenuEngine::is_fullscreen()){
                     TextEngine::redraw_full();
                 }
-            }else if(key.type==IOLayer::ALT){
+            }else if(key.type==IOLayer::ALT||(key.type==IOLayer::KEY&&(key.key=='\e'||key.key==20))){
                 in_menu=true;
             }else{
                 TextEngine::handle_input(key);
