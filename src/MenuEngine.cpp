@@ -1,6 +1,7 @@
 #include "MenuEngine.h"
 #include "TextEngine.h"
 #include "IOLayer.h"
+#include "Util.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -34,6 +35,9 @@ namespace TEdit::MenuEngine {
         STATE_NONE,
         STATE_SAVING,
         STATE_QUITCONFIRM,
+        STATE_NEWCONFIRM,
+        STATE_OPENCONFIRM,
+        STATE_OPENING,
     } state=STATE_NONE;
     
     void init(){
@@ -55,7 +59,7 @@ namespace TEdit::MenuEngine {
             IOLayer::moveCursor(0,line);
             switch(state){
             case STATE_NONE:
-                IOLayer::writeStr("S - Save, Q - Quit, F - Fullscreen");
+                IOLayer::writeStr("S - Save, Q - Quit, N - New, O - Open, F - Fullscreen");
                 break;
             case STATE_SAVING:
                 IOLayer::writeStr("Save As: ");
@@ -63,6 +67,16 @@ namespace TEdit::MenuEngine {
                 return;
             case STATE_QUITCONFIRM:
                 IOLayer::writeStr("Unsaved changes will be lost, Quit? (Y/N)");
+                return;
+            case STATE_NEWCONFIRM:
+                IOLayer::writeStr("Unsaved changes will be lost, create New file? (Y/N)");
+                return;
+            case STATE_OPENCONFIRM:
+                IOLayer::writeStr("Unsaved changes will be lost, Open another file? (Y/N)");
+                return;
+            case STATE_OPENING:
+                IOLayer::writeStr("Open File: ");
+                IOLayer::writeChars(filename,filename_len);
                 return;
             }
         }else{
@@ -83,11 +97,19 @@ namespace TEdit::MenuEngine {
     bool handle_input(IOLayer::keypress key){
         switch(state){
         case STATE_SAVING:
+        case STATE_OPENING:
             if(key.key=='\n'||key.key=='\r'){//confirm
-                if(TextEngine::save(filename)){
+                if(state == STATE_SAVING){
+                    if(TextEngine::save(filename)){
+                        state=STATE_NONE;
+                        IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
+                        TextEngine::update_cursor();
+                        return false;
+                    }
+                }else if(state == STATE_OPENING){
                     state=STATE_NONE;
                     IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
-                    TextEngine::update_cursor();
+                    TextEngine::reInitFile(filename);
                     return false;
                 }
                 return true;
@@ -106,9 +128,26 @@ namespace TEdit::MenuEngine {
             }
             return true;
         case STATE_QUITCONFIRM:
+        case STATE_NEWCONFIRM:
+        case STATE_OPENCONFIRM:
             if(key.key=='y'||key.key=='Y'||key.key=='q'||key.key=='Q'||key.key=='\n'||key.key=='\r'){
-                do_loop=false;
-                return false;
+                switch(state){
+                case STATE_QUITCONFIRM:
+                    do_loop=false;
+                    return false;
+                case STATE_NEWCONFIRM:
+                    state=STATE_NONE;
+                    IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
+                    TextEngine::reInit(new(malloc(sizeof(Text))) Text());
+                    filename_len=0;
+                    filename[0]='\0';
+                    return false;
+                case STATE_OPENCONFIRM:
+                    state=STATE_OPENING;
+                    return true;
+                default:
+                    __builtin_unreachable();
+                }
             }else if(key.key=='n'||key.key=='N'||key.key=='\e'){
                 state=STATE_NONE;
                 IOLayer::setColor(IOLayer::WHITE,IOLayer::BLACK);
@@ -123,6 +162,10 @@ namespace TEdit::MenuEngine {
                 state=STATE_SAVING;
             }else if(key.key=='q'||key.key=='Q'){
                 state=STATE_QUITCONFIRM;
+            }else if(key.key=='n'||key.key=='N'){
+                state=STATE_NEWCONFIRM;
+            }else if(key.key=='o'||key.key=='O'){
+                state=STATE_OPENCONFIRM;
             }else if(key.key=='f'||key.key=='F'){
                 fullscreen=!fullscreen;
                 if(fullscreen){
