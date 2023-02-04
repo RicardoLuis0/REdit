@@ -1,6 +1,8 @@
 #include "TextEngine.h"
+#include "MenuEngine.h"
 #include "Util.h"
 #include <ctype.h>
+#include <stdlib.h>
 
 #include <stdio.h>
 
@@ -146,10 +148,10 @@ namespace TEdit::TextEngine {
         if(x==0){
             if(y>0){
                 if((view_y+y)<data->size()){
-                    auto & a=data->get(view_y+y-1);
-                    lpos=a.len();
-                    auto & b=data->get(view_y+y);
-                    a.append(b);
+                    auto & prev_line=data->get(view_y+y-1);
+                    lpos=prev_line.len();
+                    auto & cur_line=data->get(view_y+y);
+                    prev_line.append(cur_line);
                     data->erase(view_y+y);
                     y_minus();
                     x_line(true);
@@ -160,8 +162,8 @@ namespace TEdit::TextEngine {
             }
         }else{
             x_minus();
-            auto & l=data->get(view_y+y);
-            l.erase(view_x+x);
+            auto & cur_line=data->get(view_y+y);
+            cur_line.erase(view_x+x);
             redraw_line(y);
         }
     }
@@ -191,6 +193,23 @@ namespace TEdit::TextEngine {
         lpos=0;
         IOLayer::moveCursor(x,y);
         data=t_data;
+    }
+    
+    
+    void reInit(Text * t_data)
+    {
+        x=0;
+        y=0;
+        view_x=0;
+        view_y=0;
+        lpos=0;
+        IOLayer::moveCursor(x,y);
+        
+        data->~Text();
+        free(data);
+        
+        data=t_data;
+        redraw_full();
     }
     
     void set_offset(int16_t off){
@@ -256,4 +275,77 @@ namespace TEdit::TextEngine {
         IOLayer::moveCursor(x,y);
     }
     
+    void initFile(int16_t off,const char * filename){
+        x_min=0;
+        x_mmin=-1;
+        x=0;
+        x_max=79;
+        x_mmax=80;
+        y_min=0;
+        y_mmin=-1;
+        y=0;
+        y_max=24-off;
+        y_mmax=25-off;
+        view_x=0;
+        view_y=0;
+        lpos=0;
+        IOLayer::moveCursor(x,y);
+        
+        data = new(malloc(sizeof(Text))) Text();
+        
+        MenuEngine::setfile(filename);
+        FILE * f=fopen(filename,"r");
+        if(f){
+            int c;
+            size_t i=0;
+            while((c=fgetc(f))!=EOF){//reading per-character is slow but should be ~fine~
+                TextLine &line=data->get(i);
+                if(c=='\n'){
+                    i++;
+                }else if(c=='\t'){
+                    do{
+                        line.insert(c,line.len());
+                    }while(line.len()%4);
+                }else if(isgraph(c)||c==' '){
+                    line.insert(c,line.len());
+                }
+            }
+            fclose(f);
+        }
+    }
+    
+    void reInitFile(const char * filename){
+        x=0;
+        y=0;
+        view_x=0;
+        view_y=0;
+        lpos=0;
+        IOLayer::moveCursor(x,y);
+        
+        data->~Text();
+        free(data);
+        
+        data = new(malloc(sizeof(Text))) Text();
+        
+        MenuEngine::setfile(filename);
+        FILE * f=fopen(filename,"r");
+        if(f){
+            int c;
+            size_t i=0;
+            while((c=fgetc(f))!=EOF){//reading per-character is slow but should be ~fine~
+                TextLine &line=data->get(i);
+                if(c=='\n'){
+                    i++;
+                }else if(c=='\t'){
+                    do{
+                        line.insert(c,line.len());
+                    }while(line.len()%4);
+                }else if(isgraph(c)||c==' '){
+                    line.insert(c,line.len());
+                }
+            }
+            fclose(f);
+        }
+        redraw_full();
+    }
 }

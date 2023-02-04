@@ -1,10 +1,13 @@
 #include "IOLayer.h"
 #include "TextEngine.h"
 #include "MenuEngine.h"
+#include "Util.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 namespace TEdit {
     
     bool do_loop;
@@ -12,40 +15,21 @@ namespace TEdit {
     int tedit_main(int argc,char ** argv) {
         do_loop=true;
         IOLayer::init();
-        Text data;
         MenuEngine::init();
+        IOLayer::fillLine(0,25,' ',IOLayer::WHITE,IOLayer::BLACK);
         if(argc==2){
             if(strlen(argv[1])>40){
                 IOLayer::writeStr("\nFilename Too long\n");
                 return 1;
             }else{
-                MenuEngine::setfile(argv[1]);
-                FILE * f=fopen(argv[1],"r");
-                if(f){
-                    int c;
-                    size_t i=0;
-                    while((c=fgetc(f))!=EOF){//reading per-character is slow but should be ~fine~
-                        TextLine &line=data.get(i);
-                        if(c=='\n'){
-                            i++;
-                        }else if(c=='\t'){
-                            do{
-                                line.insert(c,line.len());
-                            }while(line.len()%4);
-                        }else if(isgraph(c)||c==' '){
-                            line.insert(c,line.len());
-                        }
-                    }
-                    fclose(f);
-                }
+                TextEngine::initFile(MenuEngine::getHeight(),argv[1]);
             }
         }else if(argc>2){
             IOLayer::writeStr("\nInvalid Number of Arguments, must be zero or 1\n");
             return 1;
+        }else{
+            TextEngine::init(MenuEngine::getHeight(),new(malloc(sizeof(Text))) Text());
         }
-        IOLayer::fillLine(0,25,' ',IOLayer::WHITE,IOLayer::BLACK);
-        IOLayer::moveCursor(0,0);
-        TextEngine::init(MenuEngine::getHeight(),&data);
         TextEngine::redraw_full();
         MenuEngine::draw(false);
         bool in_menu=false;
