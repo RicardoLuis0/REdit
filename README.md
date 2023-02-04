@@ -1,2 +1,2 @@
-# TEdit
- console text editor
+# REdit
+ A simple console text editor (WIP)
