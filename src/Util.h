@@ -15,3 +15,5 @@ namespace TEdit {
 inline void* operator new(size_t, void *p) {
     return p;
 }
+
+using uint = unsigned int;

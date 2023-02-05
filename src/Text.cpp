@@ -20,7 +20,6 @@ Text& Text::operator=(Text && other){
 }
 
 Text::Text() {
-    //lines is a c-allocated pointer array to c++-allocated pointers
     _alloc=0;
     lines=nullptr;
 }
